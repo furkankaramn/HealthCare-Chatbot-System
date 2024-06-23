@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthcare Chatbot</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            height: 100vh;
+            background: #4e54c8;  
+            background: -webkit-linear-gradient(to left, #8f94fb, #4e54c8);  
+            font-family: 'Rocher';
+            font-palette: --Purples;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @font-face {
+            font-family: 'Rocher';
+            src: url(https://assets.codepen.io/9632/RocherColorGX.woff2);
+        }
+
+        @font-palette-values --Purples {
+            font-family: Rocher;
+            base-palette: 6;
+            font-palette: --Purples;
+        }
+        
+        * {
+            margin: 0px;
+            padding: 0px;
+        }
+
+        .context {
+            width: 100%;
+            position: absolute;
+            top: 50vh;
+        }
+
+        .context h1 {
+            text-align: center;
+            color: #fff;
+            font-size: 50px;
+        }
+
+        .circles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .circles li {
+            position: absolute;
+            display: block;
+            list-style: none;
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            animation: animate 25s linear infinite;
+            bottom: -150px;
+        }
+
+        .circles li:nth-child(1) {
+            left: 25%;
+            width: 80px;
+            height: 80px;
+            animation-delay: 0s;
+        }
+
+        .circles li:nth-child(2) {
+            left: 10%;
+            width: 20px;
+            height: 20px;
+            animation-delay: 2s;
+            animation-duration: 12s;
+        }
+
+        .circles li:nth-child(3) {
+            left: 70%;
+            width: 20px;
+            height: 20px;
+            animation-delay: 4s;
+        }
+
+        .circles li:nth-child(4) {
+            left: 40%;
+            width: 60px;
+            height: 60px;
+            animation-delay: 0s;
+            animation-duration: 18s;
+        }
+
+        .circles li:nth-child(5) {
+            left: 65%;
+            width: 20px;
+            height: 20px;
+            animation-delay: 0s;
+        }
+
+        .circles li:nth-child(6) {
+            left: 75%;
+            width: 110px;
+            height: 110px;
+            animation-delay: 3s;
+        }
+
+        .circles li:nth-child(7) {
+            left: 35%;
+            width: 150px;
+            height: 150px;
+            animation-delay: 7s;
+        }
+
+        .circles li:nth-child(8) {
+            left: 50%;
+            width: 25px;
+            height: 25px;
+            animation-delay: 15s;
+            animation-duration: 45s;
+        }
+
+        .circles li:nth-child(9) {
+            left: 20%;
+            width: 15px;
+            height: 15px;
+            animation-delay: 2s;
+            animation-duration: 35s;
+        }
+
+        .circles li:nth-child(10) {
+            left: 85%;
+            width: 150px;
+            height: 150px;
+            animation-delay: 0s;
+            animation-duration: 11s;
+        }
+
+        @keyframes animate {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+                border-radius: 0;
+            }
+
+            100% {
+                transform: translateY(-1000px) rotate(720deg);
+                opacity: 0;
+                border-radius: 50%;
+            }
+        }
+
+        #chatbox {
+            width: 55%;
+            margin-top: 20px;
+            flex-grow: 1;
+            border: 1px solid #5a91ff;
+            border-radius: 10px;
+            padding: 10px;
+            overflow-y: auto;
+            background-color: rgba(255, 255, 255, 0.5); 
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.7);
+            z-index: 1;
+            margin-bottom: 1px;
+            
+        }
+
+        #userInput {
+            width: 55%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.5); 
+            border-top: 1px solid #ccc;
+            position: sticky;
+            bottom: 0;
+            z-index: 1;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.7);
+        }
+
+        .botText {
+            display: flex;
+            align-items: center;
+            font-size: 20px;
+            text-align: left;
+            line-height: 25px;
+            margin-bottom: 10px;
+            color: rgb(255, 255, 255);
+            text-shadow: 2px 2px 5px black;
+            font-family: Georgia, serif;
+        }
+
+        .userText {
+            display: flex;
+            align-items: center;
+            font-size: 20px;
+            text-align: left;
+            line-height: 25px;
+            margin-bottom: 10px;
+            color: rgb(255, 255, 255);
+            text-shadow: 2px 2px 5px black;
+            font-family: Georgia, serif;
+        }
+
+        .botText img,
+        .userText img {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+            border-radius: 50%;
+        }
+
+        #voiceInput,
+        #finishButton,
+        #refreshButton {
+            width: 4%;
+            height: 75%;
+            margin-right: 2%;
+            border-radius: 50%;
+        }
+
+        #textInput {
+            font-family: Georgia, serif;
+            border: 2px solid #336c9d;
+            border-radius: 8px;
+            font-size: 20px;
+            width: 85%;
+        }
+
+        #buttonInput {
+            padding: 5px;
+            border-radius: 10px;
+            width: 8%;
+            font-size: 16px;
+            color: white;
+            background-color: #6065ca;
+            margin-left: 2%;
+            font-family: Georgia, serif;
+        }
+
+        #header {
+            padding-top: 25px;
+            text-align: center;
+            font-size: 25px;
+            z-index: 1;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="circles">
+        <ul class="circles">
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+        </ul>
+    </div>
+
+    <div id="header">
+        <h1>Healthcare Chatbot</h1>
+    </div>
+
+    <div id="chatbox">
+        <p class="botText"><img src='/static/bot.jpg' alt='Bot'><img src='/static/voiceicon.jpg' alt='Sesli Oku' class='voice-icon' onclick='speakBotResponse("Please enter symptoms separated by commas")'>Please enter symptoms (separated by commas):</p>
+    </div>
+
+    <div id="userInput">
+        <img id="finishButton" src='/static/finish.png' alt='Sohbeti Bitir' onclick="finishChat()" />
+        <img id="refreshButton" src='/static/refresh.png' alt='Yenile' onclick="refreshChat()" />
+        <img id="voiceInput" src="/static/voiceinput.png" alt="Sesli" onclick="getVoiceResponse()" />
+        <input id="textInput" type="text" name="userMessage" placeholder="Type Your Message.." />
+        <input id="buttonInput" type="submit" value="Send" />
+    </div>
+
+    <script>
+        function speakBotResponse(text) {
+            var speech = new SpeechSynthesisUtterance(text);
+            speech.lang = 'en-US';
+            window.speechSynthesis.speak(speech);
+        }
+
+        function getVoiceResponse() {
+            var recognition = new webkitSpeechRecognition();
+            recognition.lang = 'en-US';
+            recognition.start();
+
+            $('#textInput').attr('placeholder', 'Recording...');
+
+            recognition.onresult = function(event) {
+                var speechResult = event.results[0][0].transcript;
+                $('#textInput').val(speechResult);
+            };
+
+            recognition.onend = function(event) {
+                $('#textInput').attr('placeholder', 'Type Your Message..');
+            };
+        }
+
+        function refreshChat() {
+            $.post("/reset", function() {
+                $('#chatbox').html("<p class='botText'><img src='/static/bot.jpg' alt='Bot'><img src='/static/voiceicon.jpg' alt='Sesli Oku' class='voice-icon' onclick='speakBotResponse(\"Please enter symptoms separated by commas\")'>Please enter symptoms (separated by commas):</p>");
+                $('#textInput').val("");
+                $('#textInput').val("").prop("disabled", false);
+                $('#buttonInput').prop("disabled", false);
+                $('#finishButton').prop("disabled", false);
+            });
+        }
+
+        function finishChat() {
+            $.post("/finish", function() {
+                $('#chatbox').append("<p class='botText'><img src='/static/bot.jpg' alt='Bot'><img src='/static/voiceicon.jpg' alt='Sesli Oku' class='voice-icon' onclick='speakBotResponse(\"Thank you for using. Chatbot is off\")'>Thank you for using. Chatbot is off</p>");
+                $('#textInput').val("").prop("disabled", true);
+                $('#buttonInput').prop("disabled", true);
+                $('#finishButton').prop("disabled", true);
+            });
+        }
+
+        function typeWriter(text, elementId) {
+            var i = 0;
+            var speed = 20;
+            var element = document.getElementById(elementId);
+            element.innerHTML = "";
+            function typeWriterEffect() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(typeWriterEffect, speed);
+                }
+            }
+            typeWriterEffect();
+        }
+
+        function getUserResponse() {
+            var userText = $('#textInput').val();
+            if (userText.trim() === "") {
+                return;
+            }
+            var userMessage = encodeURIComponent(userText);
+            var userHTML = "<div class='userText'><img src='/static/user.png' alt='User'><img src='/static/voiceicon.jpg' alt='Sesli Oku' class='voice-icon' onclick='speakBotResponse(\"" + userText + "\")'><span>" + userText + "</span></div>";
+            $('#textInput').val("");
+            $('#chatbox').append(userHTML);
+            $('#chatbox').scrollTop($('#chatbox')[0].scrollHeight);
+            $.post("/get", { userMessage: userMessage }).done(function(data) {
+                var botResponse = data;
+                var timestamp = new Date().getTime();
+                var botHTML = "<div class='botText'><img src='/static/bot.jpg' alt='Bot'><img src='/static/voiceicon.jpg' alt='Sesli Oku' class='voice-icon' onclick='speakBotResponse(\"" + botResponse + "\")'><span id='bot-message-" + timestamp + "'></span></div>";
+                $('#chatbox').append(botHTML);
+                $('#chatbox').scrollTop($('#chatbox')[0].scrollHeight);
+                typeWriter(botResponse, 'bot-message-' + timestamp);
+            });
+        }
+
+        $("#textInput").keypress(function(e) {
+            if (e.which == 13) {
+                getUserResponse();
+            }
+        });
+
+        $('#buttonInput').click(function() {
+            getUserResponse();
+        });
+    </script>
+</body>
+
+</html>
